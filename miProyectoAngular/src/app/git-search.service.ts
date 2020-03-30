@@ -1,7 +1,7 @@
 import { Injectable, Query } from '@angular/core';
 import { GitSearch} from './git-search'
 import { HttpClient } from '@angular/common/http';
-import 'rxjs/add/operator/toPromise';
+import 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class GitSearchService {
       this.http = http
     }
 
-  gitSerch = (query: string)=>{
+  gitSearch = (query: string)=>{
     let promise = new Promise <GitSearch>((resolve, reject) => {
 
       if(this.cachedValues[query]){
