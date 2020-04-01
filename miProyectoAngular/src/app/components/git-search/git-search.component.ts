@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute,  ParamMap, Router } from '@angular/router'
 import { GitSearchService } from '../../git-search.service';
 import { GitSearch } from '../../git-search';
 import { empty } from 'rxjs';
@@ -11,30 +12,38 @@ import { empty } from 'rxjs';
 export class GitSearchComponent implements OnInit {
   searchResults: GitSearch;
   searchQuery: string;
+  displayQuery: string;
   mostrar: boolean =false;
-  constructor(private GitSearchService: GitSearchService) { }
+  title: string;
 
-  ngOnInit() {
-    this.GitSearchService.gitSearch(this.searchQuery).then( (response) => {
-      this.searchResults = response;
-    }, (error) => {
-      alert("Error: " + error.statusText)
-    })
-  }
+  constructor(
+    private GitSearchService: GitSearchService,
+    private route: ActivatedRoute, 
+    private router: Router
+    ) { }
 
-  gitSearch = () => {
-    this.GitSearchService.gitSearch(this.searchQuery).then( (response) => {
-      if(this.searchResults==null){
-        this.mostrar = true;
-      }
-      else{
+    ngOnInit() {
+      this.route.paramMap.subscribe( (params: ParamMap) => {
+        this.searchQuery = params.get('query');
+        this.displayQuery = params.get('query');
+        this.gitSearch();  
+      })
+      this.route.data.subscribe( (result) => {
+        this.title = result.title
+      });
+    }
+
+    gitSearch = () => {
+      this.GitSearchService.gitSearch(this.searchQuery).then( (response) => {
         this.searchResults = response;
-      }
-      
-    }, (error) => {
-      alert("Error: " + error.statusText)
-    })
-    
+      }, (error) => {
+        alert("Error: " + error.statusText)
+      })
+    }
+
+  sendQuery = () => {
+    this.searchResults = null;
+    this.router.navigate(['/search/' + this.searchQuery])
   }
 
 }

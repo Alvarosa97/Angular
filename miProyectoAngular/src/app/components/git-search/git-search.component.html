@@ -1,5 +1,6 @@
+<h3>{{title}} - {{displayQuery}}</h3>
 <input name="query" placeholder="Buscar" [(ngModel)]="searchQuery" />
-<button (click)="gitSearch()">Submit</button>
+<button (click)="sendQuery()">Enviar</button>
 
 <div *ngIf="searchResults; else elseBlock">
     <h3 class="total">Total Results: {{searchResults.total_count}}</h3>
