@@ -1,10 +1,10 @@
 <h3>{{title}} - {{displayQuery}}</h3>
-<form (ngSubmit)="sendQuery()" [formGroup]="form">
-  <div *ngFor="let key of modelKeys">
-     {{key}}<input placeholder="Enter {{key}} Here" formControlName="{{key}}" />
-  </div>
-  <button type="submit" [disabled]="!form.valid">Submit</button>
-  </form>
+<form (ngSubmit)="sendQuery()">
+<div *ngFor="let key of modelKeys">
+    {{key}} <input name="{{key}}" placeholder="introduzca {{key}}" [(ngModel)]="model[key]" />
+</div>
+<button type="submit">Enviar</button>
+</form>
 
 <div *ngIf="searchResults; else elseBlock">
     <h3 class="total">Total Results: {{searchResults.total_count}}</h3>
@@ -20,5 +20,6 @@
         <p> Created On: {{result.created_at | date:'fullDate'}} </p>
       </li>
     </ul>
+    <h3 class="rojo" *ngIf="mostrar">No hemos encontrado resultados con esos parametros </h3>
   </div>
   <ng-template #elseBlock>Loading...</ng-template>
