@@ -17,6 +17,7 @@ export class GitSearchComponent implements OnInit {
   searchQuery: string;
   displayQuery: string;
   title: string;
+  pagina: number; 
   form: FormGroup;
   formControls = {};
 
@@ -52,6 +53,11 @@ export class GitSearchComponent implements OnInit {
     this.route.paramMap.subscribe( (params: ParamMap) => {
       this.searchQuery = params.get('query');
       this.displayQuery = params.get('query');
+      this.pagina = +params.get('page');
+      if (this.pagina == 0)
+      {
+        this.pagina=1;
+      }
       this.gitSearch();  
     })
     this.route.data.subscribe( (result) => {
@@ -60,7 +66,7 @@ export class GitSearchComponent implements OnInit {
   }
 
   gitSearch = () => {
-    this.GitSearchService.gitSearch(this.searchQuery).then( (response) => {
+    this.GitSearchService.gitSearch(this.searchQuery, this.pagina).then( (response) => {
       this.searchResults = response;
     }, (error) => {
       alert("Error: " + error.statusText)
@@ -84,6 +90,8 @@ export class GitSearchComponent implements OnInit {
         this.searchQuery = search + params;
     }
     this.displayQuery = this.searchQuery;
+    this.pagina=1;  
+    this.router.navigate(['/search/' + this.searchQuery + '/' + this.pagina])
     this.gitSearch();
 }
 
