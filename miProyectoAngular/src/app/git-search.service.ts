@@ -2,7 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { GitSearch} from './git-search'
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import 'rxjs';
+import { Observable } from 'rxjs';
+import { exhaustMap, scan, mapTo, map, publishReplay, startWith, refCount, first, filter, switchMap } from 'rxjs/operators';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,43 +13,32 @@ import 'rxjs';
 
 export class GitSearchService {
   private cadenahttp: string;
+  cachedValue: string;
 
     cachedValues: Array<{
       [query:string]:GitSearch
     }> = [];
+    search: Observable<GitSearch>;
 
-      constructor( private http: HttpClient) {
+    constructor( private http: HttpClient) {
       
     }
 
-  gitSearch = (query: string, page:number)=>{
-    let promise = new Promise <GitSearch>((resolve, reject) => {
+    gitSearch: Function = (query: string, page: number): Observable<GitSearch> => {
 
-      if(this.cachedValues[query+page]){
-        resolve(this.cachedValues[query+page])
+      if (page === null) {
+        this.cadenahttp = query;
       }
-      else{
-        if (page === null)
-            {
-              this.cadenahttp = query;
-            }
-            else
-            {
-              this.cadenahttp = query + '&page=' + page;
-            }
-            console.log('CADENA ' + this.cadenahttp);
-
-            this.http.get('https://api.github.com/search/repositories?q=' + this.cadenahttp)
-            .toPromise()
-            .then( (response) => {
-                this.cachedValues[query+page] = (response as GitSearch);
-                resolve(response as GitSearch)
-            }, (error) => {
-                reject(error);
-            })
-        }
-    })
-    return promise;
-  }
+      else {
+        this.cadenahttp = query + '&page=' + page;
+      }
+  
+        this.search = this.http.get<GitSearch>('https://api.github.com/search/repositories?q=' + this.cadenahttp).pipe(        
+          publishReplay(1),
+          refCount());
+        this.cachedValue = query;      
+      
+      return this.search;
+    }
 
 }
