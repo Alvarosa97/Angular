@@ -43,3 +43,11 @@
 .ng-invalid:not(form)  {
     border: 2px solid #a94442; /* red */
 }
+
+.error{
+    background-color:  #bb8a8a;
+    color:  #a94442;
+    width: 12%;
+    text-align: center;
+    margin-left: 45%;
+}

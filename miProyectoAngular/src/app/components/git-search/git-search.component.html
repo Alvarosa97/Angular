@@ -3,6 +3,14 @@
 <form (ngSubmit)="sendQuery()" [formGroup]="form">
   <div *ngFor="let key of modelKeys">
      {{key}}<input placeholder="introduzca {{key}}" formControlName="{{key}}" />
+     
+     <div *ngIf="key==='q' && form.controls['q'].value==''" class="error">
+          El campo no puede quedar vacío
+    </div>
+    <div *ngIf="key==='stars' && form.controls['stars'].valid===false" class="error">
+      demasiados caracteres 
+   </div>
+
   </div>
   <button type="submit" [disabled]="!form.valid">Buscar</button>
   </form>
